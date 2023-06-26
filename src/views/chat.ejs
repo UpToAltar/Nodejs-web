@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHAT REAL TIME</title>
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/chat.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body>
+    <div class="nav">
+        <% if(!tokenData) {%>
+
+            <div class="nav-auth">
+                <a href="/auth/register" class="nav-auth-register">Đăng kí</a>
+                <a href="/auth/login" class="nav-auth-login">Đăng nhập</a>
+            </div>
+            <% } else { %>
+                <div class="nav-user">
+                    <div class="nav-user-ava">
+                        <img src="<%=avata %>" alt="">
+                        <form id="nav-user-form" action="/user/upload/image/<%= id %>" method="POST"
+                            enctype="multipart/form-data">
+                            <input id="nav-user-upload" name="avata" type="file" onchange="submitFormAvata()" hidden>
+
+                        </form>
+                        <label for="nav-user-upload" class="nav-user-label">
+                            Change avata
+                            <i class='bx bx-repost'></i>
+                        </label>
+                    </div>
+                    <span class="nav-user-name">
+                        <%=userName %>
+                    </span>
+                    <form method="POST" action="/auth/logout" class="nav-user-logout">
+                        <button type="submit"><i class='bx bx-log-out'></i></button>
+                    </form>
+                </div>
+                <% } %>
+                    <ul class="nav-list">
+                        <li class="nav-list-item">
+                            <a href="/">Home</a>
+                        </li>
+                        <li class="nav-list-item">
+                            <a href="/book">Book</a>
+                        </li>
+                        <li class="nav-list-item active">
+                            <a href="/chat">Chat</a>
+                        </li>
+                        <li class="nav-list-item">Contact</li>
+                        <li class="nav-list-item">Blog</li>
+                    </ul>
+                    <ul class="nav-icon">
+                        <li class="nav-icon-item"><i class='bx bxl-facebook'></i></li>
+                        <li class="nav-icon-item"><i class='bx bxl-twitter'></i></li>
+                        <li class="nav-icon-item"><i class='bx bxl-instagram'></i></li>
+                        <li class="nav-icon-item"><i class='bx bx-basketball'></i></li>
+                    </ul>
+    </div>
+
+    <div class="chat-wrap">
+        <div class="join-container">
+            <header class="join-header">
+                <h1><i class="fas fa-smile"></i> ChatCord</h1>
+            </header>
+            <main class="join-main">
+                <form class="join-form" action="/chat/room">
+                    <div class="form-control-chat">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" id="username" placeholder="Enter username..." required />
+                    </div>
+                    <div class="form-control-chat">
+                        <label for="room">Room</label>
+                        <select name="room" id="room">
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="Python">Python</option>
+                            <option value="PHP">PHP</option>
+                            <option value="C#">C#</option>
+                            <option value="Ruby">Ruby</option>
+                            <option value="Java">Java</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="joinBtn" class="btn-join">Join Chat</button>
+                </form>
+            </main>
+        </div>
+    </div>
+    
+    
+</body>
+
+</html>

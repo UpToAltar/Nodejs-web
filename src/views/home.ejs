@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOME PAGE</title>
+    <link rel="stylesheet" href="/css/toast.css">
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="/css/home.css">
+    
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+    <div class="nav">
+        <% if(!tokenData) {%> 
+            
+            <div class="nav-auth">
+                <a href="/auth/register" class="nav-auth-register">Đăng kí</a>
+                <a href="/auth/login" class="nav-auth-login">Đăng nhập</a>
+            </div>
+        <% } else { %> 
+            <div class="nav-user">
+                <div class="nav-user-ava">
+                    <img src="<%=avata %>" alt="">
+                    <form id="nav-user-form" action="/user/upload/image/<%= id %>" method="POST" enctype="multipart/form-data">
+                        <input id="nav-user-upload" name="avata" type="file" onchange="submitFormAvata()" hidden>
+                        
+                    </form>
+                    <label for="nav-user-upload" class="nav-user-label">
+                        Change avata
+                        <i class='bx bx-repost'></i>
+                    </label>
+                </div>
+                <span class="nav-user-name">
+                    <%=userName %>
+                </span>
+                <form method="POST" action="/auth/logout" class="nav-user-logout">
+                    <button type="submit"><i class='bx bx-log-out'></i></button>
+                </form>
+            </div>
+            <% } %>
+        <ul class="nav-list">
+            <li class="nav-list-item active">
+                <a href="/">Home</a>
+            </li>
+            <li class="nav-list-item">
+                <a href="/book">Book</a>
+            </li>
+            <li class="nav-list-item">
+                <a href="/chat">Chat</a>
+            </li>
+            <li class="nav-list-item">Contact</li>
+            <li class="nav-list-item">Blog</li>
+        </ul>
+        <ul class="nav-icon">
+            <li class="nav-icon-item"><i class='bx bxl-facebook'></i></li>
+            <li class="nav-icon-item"><i class='bx bxl-twitter'></i></li>
+            <li class="nav-icon-item"><i class='bx bxl-instagram'></i></li>
+            <li class="nav-icon-item"><i class='bx bx-basketball'></i></li>
+        </ul>
+    </div>
+    
+    <form action="/user/create" method="POST" class="form form-add display-none" id="form-1">
+        <h3 class="heading">ADD USER</h3>
+        <p class="desc"> Thêm User vào CSDL ❤️</p>
+        <div class="form-icon-x" data=""><i class='bx bxs-x-circle'></i></div> 
+        <div class="spacer"></div>
+    
+        <div class="form-group">
+            <label for="username" class="form-label">User Name</label>
+            <input id="username" name="username" type="text" placeholder="VD: Quân Đào" class="form-control">
+            <span class="form-message"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="email" class="form-label">Email</label>
+            <input id="email" name="email" type="text" placeholder="VD: email@domain.com" class="form-control">
+            <span class="form-message"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input id="password" name="password" type="text" placeholder="Nhập password user" class="form-control">
+            <span class="form-message"></span>
+        </div>
+    
+        <div class="form-group">
+            <label for="role_code" class="form-label">Role_code</label>
+            <input id="role_code" name="role_code" placeholder="R1, R2 hoặc R3" type="text" class="form-control">
+            <span class="form-message"></span>
+        </div>
+    
+    
+        <button class="form-submit" type="submit">Thêm mới</button>
+    
+    </form>
+        <div class="w3-container" style="position: relative;">
+            <h2>LIST USER TABLE:</h2>
+            
+            <button class="add-user-btn">ADD USER</button>
+                
+            
+            <table class="w3-table-all">
+                <thead>
+                    <tr class="w3-pale-green">
+                        <th>Id</th>
+                        <th>User Name</th>
+                        <th>Email</th>
+                        
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(var i=0; i < dataUser.length; i++) { %>
+                        <tr class="w3-hover-pale-blue">
+                            <td>
+                                <%= dataUser[i].id %>
+                            </td>
+                            <td>
+                                <%= dataUser[i].username %>
+                            </td>
+                            <td>
+                                <%= dataUser[i].email %>
+                            </td>
+                            
+                            <td class="action-detail">
+                                <a href="/user/detail/<%= dataUser[i].id %>" class="btn-detail btn-home">Detail</a>
+                                <button type="button" class="btn-edit btn-home" data="<%= dataUser[i].id %>">Edit</button>
+                                <!-- edit form -->
+    
+                                <div id="edit-form" class="edit-form-<%= dataUser[i].id %> display-none">
+                                    <div class="form-edit-icon" data="<%= dataUser[i].id %>"><i class='bx bxs-x-circle'></i>
+                                    </div>
+                                    <h2>Edit User</h2>
+                                    <div>
+                                        <form action="/user/update/<%= dataUser[i].id %>" method="POST">
+                                            <input type="text" name="username" placeholder="UserName"
+                                                value="<%= dataUser[i].username %>"></input>
+
+                                            <input type="text" name="email" placeholder="email"
+                                                value="<%= dataUser[i].email %>"></input>
+
+                                            <input type="text" name="avata" placeholder="avata"
+                                                value="<%= dataUser[i].avata %>"></input>
+
+                                            <input type="text" name="role_code" placeholder="role_code"
+                                                value="<%= dataUser[i].role_code %>"></input>
+    
+    
+                                            <button type="submit">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+    
+                                <form action="/user/delete" class="form-btn-delete" id="form-btn-delete" method="POST">
+                                    <input class="id-data" type="text" value="<%= dataUser[i].id %>" name="id" hidden>
+                                    <button type="submit" class="btn-delete btn-home">Delete</button>
+                                </form>
+    
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+    
+            </table>
+        </div>
+    
+    </div>
+    <div class="overlay display-none"></div>
+    <div id="toast-form"></div>
+    <script src="/js/update.js"></script>
+    
+    <script src="/js/validation.js"></script>
+    <script src="/js/toast.js"></script>
+    <script>
+        // Submit form ava
+        function submitFormAvata() {
+            alert("Bạn cập nhật ảnh thành công, vui lòng đăng xuất vào lại để hiển thị ảnh mới")
+            document.getElementById("nav-user-form").submit()
+        }
+        
+    </script>
+    <script>
+        Validator({
+                form: '#form-1',
+                formGroup: '.form-group',
+                rules: [
+                    Validator.isRequired('#username'),
+                    Validator.isEmail('#email', 'Vui lòng nhập trường này'),
+                    Validator.isPassword('#password', 5),
+                    Validator.isRole('#role_code'),
+                ],
+                onSubmit: (data) => {
+                const options = {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json",
+
+                    },
+                    body: JSON.stringify(data)
+                }
+                fetch('/user/create', options).then(res => res.json())
+                    .then(function (response) {
+                        if(response.err == 0){
+                            toast({
+                                title: "Success",
+                                message: "Bạn đã tạo mới user thành công",
+                                type: "success",
+                                duration: 2000,
+                            });
+                            setTimeout(()=>{
+                                window.location.href = '/'
+                            },1000)
+                        } else if(response.err ==1){
+                            toast({
+                                title: "Tồn tại",
+                                message: "Email đã tồn tại",
+                                type: "info",
+                                duration: 2000,
+                            });
+                        } else{
+                            toast({
+                                title: "Chưa được cấp quyền",
+                                message: "Yêu cầu đăng nhập để dùng chức năng",
+                                type: "error",
+                                duration: 2000,
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        })
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="/css/toast.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Register Form</title>
+</head>
+
+<body>
+    <div class="main">
+
+        <form action="" method="POST" class="form" id="form-1">
+            <h3 class="heading">Thành viên đăng ký</h3>
+            <p class="desc">Register for having permission to access ❤️</p>
+
+            <div class="spacer"></div>
+
+            <div class="form-group">
+                <label for="username" class="form-label">User Name</label>
+                <input id="username" name="username" type="text" placeholder="VD: Quân Đào" class="form-control">
+                <span class="form-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input id="email" name="email" type="text" placeholder="VD: email@domain.com" class="form-control">
+                <span class="form-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password" class="form-label">Mật khẩu</label>
+                <input id="password" name="password" type="password" placeholder="Nhập mật khẩu" class="form-control">
+                <span class="form-message"></span>
+            </div>
+
+            <div class="form-group">
+                <label for="password_confirmation" class="form-label">Nhập lại mật khẩu</label>
+                <input id="password_confirmation" name="password_confirmation" placeholder="Nhập lại mật khẩu"
+                    type="password" class="form-control">
+                <span class="form-message"></span>
+            </div>
+
+            
+            <button class="form-submit" type="submit">Đăng kí</button>
+            <div class="form-link">Bạn đã có tài khoản ?
+                <a  href="/auth/login">  đăng nhập</a>
+            </div>
+        </form>
+    </div>
+<div id="toast-form">
+</div>
+    <script src="/js/validation.js"></script>
+    <script src="/js/toast.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.3.6/axios.min.js"
+        integrity="sha512-06NZg89vaTNvnFgFTqi/dJKFadQ6FIglD6Yg1HHWAUtVFFoXli9BZL4q4EO1UTKpOfCfW5ws2Z6gw49Swsilsg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        Validator({
+            form: '#form-1',
+            formGroup: '.form-group',
+            rules: [
+                Validator.isRequired('#username'),
+                Validator.isEmail('#email', 'Vui lòng nhập trường này'),
+                Validator.isPassword('#password', 5),
+                Validator.isConfirmed('#password_confirmation', 'Vui lòng nhập trường này'),
+                
+            ],
+            onSubmit: (data) => {
+                axios.post('/auth/register',data)
+                    .then(function (response) {
+            
+                        if(response.data.err == 0) {
+                            toast({
+                                title: "Success",
+                                message: "Bạn đã đăng kí thành công, vui lòng đăng nhập",
+                                type: "success",
+                                duration: 2000,
+                            });
+                            setTimeout(() => {
+                                window.location.href = '/auth/login'
+                            }, 3000)
+                        } else {
+                            toast({
+                                title: "Failed",
+                                message: "Đăng kí thất bại, email đã tồn tại",
+                                type: "error",
+                                duration: 2000,
+                            });
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        })
+
+
+    </script>
+
+</body>
+
+</html>

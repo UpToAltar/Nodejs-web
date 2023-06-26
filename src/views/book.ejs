@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOOK PAGE</title>    
+    <link rel="stylesheet" href="/css/toast.css">
+    <link rel="stylesheet" href="/css/register.css">
+    <link rel="stylesheet" href="/css/home.css">
+        <link rel="stylesheet" href="/css/book.css">
+        <link rel="stylesheet" href="/css/cart.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<body>
+    <div class="nav">
+        <% if(!tokenData) {%>
+
+            <div class="nav-auth">
+                <a href="/auth/register" class="nav-auth-register">Đăng kí</a>
+                <a href="/auth/login" class="nav-auth-login">Đăng nhập</a>
+            </div>
+            <% } else { %>
+                <div class="nav-user">
+                    <div class="nav-user-ava">
+                        <img src="<%=avata %>" alt="">
+                        <form id="nav-user-form" action="/user/upload/image/<%= id %>" method="POST" enctype="multipart/form-data">
+                            <input id="nav-user-upload" name="avata" type="file" onchange="submitFormAvata()" hidden>
+                        
+                        </form>
+                        <label for="nav-user-upload" class="nav-user-label">
+                            Change avata
+                            <i class='bx bx-repost'></i>
+                        </label>
+                    </div>
+                    <span class="nav-user-name">
+                        <%=userName %>
+                    </span>
+                    <form method="POST" action="/auth/logout" class="nav-user-logout">
+                        <button type="submit"><i class='bx bx-log-out'></i></button>
+                    </form>
+                </div>
+            <% } %>
+                <ul class="nav-list">
+                    <li class="nav-list-item">
+                        <a href="/">Home</a>
+                    </li>
+                    <li class="nav-list-item active">
+                        <a href="/book">Book</a>
+                    </li>
+                    <li class="nav-list-item">
+                        <a href="/chat">Chat</a>
+                    </li>
+                    <li class="nav-list-item">Contact</li>
+                    <li class="nav-list-item">Blog</li>
+                </ul>
+                <ul class="nav-icon">
+                    <li class="nav-icon-item"><i class='bx bxl-facebook'></i></li>
+                    <li class="nav-icon-item"><i class='bx bxl-twitter'></i></li>
+                    <li class="nav-icon-item"><i class='bx bxl-instagram'></i></li>
+                    <li class="nav-icon-item"><i class='bx bx-basketball'></i></li>
+                </ul>
+    </div>
+
+    <div class="book-wrap">
+        <div class="container book">
+        <% if(role !='R3' && role != null) { %>
+            <button class="add-user-btn">ADD BOOK</button>
+        
+        <% } %>
+
+        <form action="/book/create" method="POST" class="form form-add display-none" id="form-1">
+            
+            
+            <div class="form-icon-x" data=""><i class='bx bxs-x-circle'></i></div>
+            
+        
+            <div class="form-group">
+                <label for="title" class="form-label">Book title</label>
+                <input id="title" name="title" type="text" placeholder="VD: Ngày của tôi" class="form-control">
+                <span class="form-message"></span>
+            </div>
+        
+            <div class="form-group">
+                <label for="price" class="form-label">Giá sách</label>
+                <input id="price" name="price" type="text" placeholder="VD: 54.4" class="form-control">
+                <span class="form-message"></span>
+            </div>
+        
+            <div class="form-group">
+                <label for="available" class="form-label">Số lượng</label>
+                <input id="available" name="available" type="text" placeholder="VD: 6" class="form-control">
+                <span class="form-message"></span>
+            </div>
+        
+            <div class="form-group">
+                <label for="description" class="form-label">Miêu tả sách</label>
+                <input id="description" name="description" placeholder="VD: Sách viết bởi ..." type="text" class="form-control">
+                <span class="form-message"></span>
+            </div>
+            <div class="form-group">
+                <label for="image" class="form-label">Link ảnh sách</label>
+                <input id="image" name="image" placeholder="Link ảnh" type="text" class="form-control">
+                <span class="form-message"></span>
+            </div>
+        
+            <button class="form-submit" type="submit">Thêm mới</button>
+        
+        </form>
+        <div class="pagination-layout container">
+            <div onclick="prePage(this)" class="pagination-pre">&laquo;</div>
+            <% if(query == false){ %> 
+                <%for(var i=1; i <=pageQuantity +1 ; i++){ %>
+                    <a href="/book/<%= i %>" class="<% if(i == currentPage) { %>active <% } %> " value="<% if(i== pageQuantity + 1) { %> /book/<%= i %> <% } else { %> /book/<%= i+1 %> <% } %>" value1="<% if(i== 1) { %> /book/<%= i %> <% } else { %> /book/<%= i-1 %> <% } %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+            <% } else { %> 
+                <%for(var i=1; i <=pageQuantity +1 ; i++){ %>
+                    <a href="/book/<%= i %>/search?category=<%= query %>" class="<% if(i == currentPage) { %>active <% } %> " value="<% if(i== pageQuantity + 1) { %> /book/<%= i %>/search?category=<%= query %> <% } else { %> /book/<%= i+1 %>/search?category=<%= query %> <% } %>" value1="<% if(i== 1) { %> /book/<%= i %>/search?category=<%= query %> <% } else { %> /book/<%= i-1 %>/search?category=<%= query %> <% } %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+            <% } %>
+            <div onclick="nextPage(this)" class="pagination-next">&raquo;</div>
+        </div>
+        <form action="/book/search" method="GET" class="form-search container">
+        
+            <input name="category" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search by category">
+            <datalist id="datalistOptions">
+                <%for(var i=0; i < dataCategory.length; i++){ %>
+                    <option value="<%= dataCategory[i].value %>">
+                <% } %>
+            </datalist>
+            <div class="cart-shop">
+                <div class="cart-shop-wrapValue">
+                    
+                </div>
+                <i class='bx bxs-cart-alt'></i>
+            </div>
+            <button type="submit">SEARCH</button>
+        </form>
+        <div class="row row-cols-1 row-cols-md-4 row-cols-lg-5 row-cols-sm-2 g-4">
+            <%for(var i=0; i < dataBook.length; i++){ %>
+                <div class="col">
+                    <div class="card h-100">
+                        <a href="/book/detail/<%= dataBook[i].id %>">
+                            <img style="cursor: pointer;" src="<%= dataBook[i].image %>" class="card-img-top" alt="..." ">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <%= dataBook[i].title %>
+                            </h5>
+                            <p class="card-text">
+                                <%= dataBook[i].description %>
+                            </p>
+                        </div>
+                        <div class="card-item">
+                            <span class="card-price">
+                                $<%= dataBook[i].price %>
+                            </span>
+                            <% if( dataBook[i].available !=0 ) { %>
+                                <div class="card-available">
+                                    <span>In stock </span>
+                                    <i class='bx bxs-check-circle'></i>
+                                </div>
+                                <% } else { %>
+    
+                                    <div class="card-available-not">
+                                        <span>Out of stock </span>
+                                        <i class='bx bxs-x-circle'></i>
+                                    </div>
+                                    <% } %>
+                        </div>
+                        <% if(role == 'R3' || role == null){ %> 
+                            <button class="book-btn" onclick="addcart('<%= dataBook[i].id %>','<%= dataBook[i].image %>','<%= dataBook[i].title %>','<%= dataBook[i].categoryData.value %>','<%= dataBook[i].price %>')">Add to cart</button>
+                        <% } else { %> 
+                            <div class="btn-admin">
+                                <button class="update-btn btn-edit" data="<%= dataBook[i].id %>">Update</button>
+                                <!-- edit form -->
+                                
+                                <div id="edit-form" class="edit-form-<%= dataBook[i].id %> display-none">
+                                    <div class="form-edit-icon" data="<%= dataBook[i].id %>"><i class='bx bxs-x-circle'></i>
+                                    </div>
+                                    <h2>Edit User</h2>
+                                    <div>
+                                        <form action="/book/update/<%= dataBook[i].id %>" method="POST">
+                                            <input type="text" name="title" placeholder="title" value="<%= dataBook[i].title %>"></input>
+
+                                            <input type="text" name="price" placeholder="price" value="<%= dataBook[i].price %>"></input>
+                                
+                                            <input type="text" name="available" placeholder="available" value="<%= dataBook[i].available %>"></input>
+                                
+                                            <input type="text" name="image" placeholder="image" value="<%= dataBook[i].image %>"></input>
+                                
+                                            <input type="text" name="description" placeholder="description" value="<%= dataBook[i].description %>"></input>
+                                
+                                            <button type="submit">Save</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <a class="delete-btn" onclick="deletesp('<%= dataBook[i].id %>')" href="#">Delete</a>
+                            </div>
+                        <% } %>
+                    </div>
+    
+                </div>
+                <% } %>
+    
+        </div>
+    </div>
+    </div>
+    <!-- shopp -->
+    <div class="shop display-none">
+        <div class="card">
+            <div class="cart-close">
+                <i class='bx bxs-x-circle'></i>
+            </div>
+            <div class="row cart-wrap">
+                <div class="col-md-8 cart">
+                    <div class="cart-title">
+                        <div class="row">
+                            <div class="col">
+                                <h4><b>Shopping Cart</b></h4>
+                            </div>
+                            <div class="col align-self-center text-right text-muted total-item"></div>
+                        </div>
+                    </div>
+                    <div class="row cart-main-wrap">
+                        
+                    </div>
+                    
+                    <div class="back-to-shop"><a href="#" class="cart-aTag">&leftarrow;</a><span class="text-muted">Back to
+                            shop</span></div>
+                </div>
+                <div class="col-md-4 summary">
+                    <div>
+                        <h5><b>Summary</b></h5>
+                    </div>
+                    
+                    <hr>
+                    <div class="row">
+                        <div class="col total-item-2" ></div>
+                        <div class="col text-right total-price"></div>
+                    </div>
+                    <form class="form-shop-cart">
+                        <p>SHIPPING</p>
+                        <select>
+                            <option class="text-muted">Standard-Delivery- &euro;5.00</option>
+                        </select>
+                        <p>GIVE CODE</p>
+                        <input id="code-cart" placeholder="Enter your code">
+                    </form>
+                    <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                        <div class="col">TOTAL PRICE</div>
+                        <div class="col text-right total-price"></div>
+                    </div>
+                    <button class="btn-checkout-cart">CHECKOUT</button>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+    <footer>
+        <div class="container footer-top-wrap">
+            <div class="footer-top">
+                <ul class="row footer-top-desc">
+                    <li class="footer-top-item col-md-3 col-sm-6">
+                        <img src="	https://nhasachquangloi.vn/pub/media/wysiwyg/alothemes/static/demo1/s1.png" alt="">
+                        <div>
+                            <h3>VẬN CHUYỂN NHANH</h3>
+                            <p>Đơn hàng từ 300k</p>
+                        </div>
+                    </li>
+                    <li class="footer-top-item col-md-3 col-sm-6">
+                        <img src="https://nhasachquangloi.vn/pub/media/wysiwyg/alothemes/static/demo1/s2.png" alt="">
+                        <div>
+                            <h3>UY TÍN 30 NĂM</h3>
+                            <p>Thành lập từ 1898</p>
+                        </div>
+                    </li>
+                    <li class="footer-top-item col-md-3 col-sm-6">
+                        <img src="https://nhasachquangloi.vn/pub/media/wysiwyg/alothemes/static/demo1/s3.png" alt="">
+                        <div>
+                            <h3>ĐẶT HÀNG NGAY</h3>
+                            <p>Gọi số 0.0000.898.9</p>
+                        </div>
+                    </li>
+                    <li class="footer-top-item col-md-3 col-sm-6">
+                        <img src="https://nhasachquangloi.vn/pub/media/wysiwyg/alothemes/static/demo1/s4.png" alt="">
+                        <div>
+                            <h3>Vận chuyển tận nơi</h3>
+                            <p>Trực tiếp tới quý khách</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class=".container-xxl footer-bot-wrap">
+            <ul class=" row footer-bot-list">
+                <div class="col-lg-4 footer-bot-left">
+                    <img class="footer-img-1" src="https://cdn0.fahasa.com/skin/frontend/ma_vanese/fahasa/images/logo.png" alt="">
+                    <p>Lầu 5, 387-389 Hai Bà Trưng Quận 3 TP HCMCông Ty Cổ Phần Phát Hành Sách TP HCM - FAHASA60 - 62 Lê Lợi, Quận 1, TP. HCM,
+                    Việt Nam</p>
+                    <p>Fahasa.com nhận đặt hàng trực tuyến và giao hàng tận nơi. KHÔNG hỗ trợ đặt mua và nhận hàng trực tiếp tại văn phòng cũng
+                    như tất cả Hệ Thống Fahasa trên toàn quốc.</p>
+                    <img class="footer-img-2" src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/logo-bo-cong-thuong-da-thong-bao1.png" alt="">
+                    <h2>Phương thức thanh toán</h2>
+                    <div class="footer-img-wrap">
+                        <img src="https://cdn0.fahasa.com/media//wysiwyg/Logo-NCC/ZaloPay-logo-130x83.png" alt="">
+                        <img src="https://cdn0.fahasa.com/media//wysiwyg/Logo-NCC/shopeepay_logo.png" alt="">
+                    </div>
+                </div>
+                <li class="col footer-bot-item">
+                    <h3>DỊCH VỤ</h3>
+                    <div><a href="#">Điều khoản sử dụng</a></div>
+                    <div><a href="#">Chính sách bảo mật thông tin cá nhân</a></div>
+                    <div><a href="#">Chính sách bảo mật thanh toán</a></div>
+                    <div><a href="#">Giới thiệu Fahasa</a></div>
+                    <div><a href="#">Hệ thống trung tâm - nhà sách</a></div>
+                </li>
+                <li class="col footer-bot-item">
+                    <h3>HỖ TRỢ</h3>
+                    <div><a href="#">Đăng nhập/Tạo mới tài khoản</a></div>
+                    <div><a href="#">Thay đổi địa chỉ khách hàng</a></div>
+                    <div><a href="#">Chi tiết tài khoản</a></div>
+                    <div><a href="#">Lịch sử mua hàng</a></div>
+                </li>
+                <li class="col footer-bot-item">
+                    <h3>CHÍNH SÁCH</h3>
+                    <div><a href="#">Chính sách đổi - trả - hoàn tiền</a></div>
+                    <div><a href="#">Chính sách bảo hành - bồi hoàn</a></div>
+                    <div><a href="#">Chính sách vận chuyển</a></div>
+                    <div><a href="#">Phương thức thanh toán và xuất HĐ</a></div>
+
+                </li>
+                
+            </ul>
+            <div class="footer-colab">
+                <img src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/vnpost1.png" alt="">
+                <img src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/ahamove_logo3.png" alt="">
+                <img src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/icon_giao_hang_nhanh1.png" alt="">
+                <img src="https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/icon_snappy1.png" alt="">
+                <img src="	https://cdn0.fahasa.com/media/wysiwyg/Logo-NCC/Logo_ninjavan.png" alt="">
+            </div>
+        </div>
+    </footer>
+
+    <div class="overlay display-none"></div>
+    <div id="toast-form"></div>
+    <script src="/js/update.js">
+    </script>
+    <script src="/js/cart.js"></script>
+    <script src="/js/validation.js"></script>
+    <script src="/js/toast.js"></script>
+    <script src="/js/pagination.js"></script>
+    <script>
+        // Submit form ava
+        function submitFormAvata() {
+            alert("Bạn cập nhật ảnh thành công, vui lòng đăng xuất vào lại để hiển thị ảnh mới")
+            document.getElementById("nav-user-form").submit()
+        }
+
+    </script>
+    <script>
+        // Form create book
+        Validator({
+            form: '#form-1',
+            formGroup: '.form-group',
+            rules: [
+                Validator.isRequired('#title'),
+                Validator.isPrice('#price'),
+                Validator.isAvailable('#available'),
+                Validator.isImage('#image'),
+                Validator.isDescription('#description'),
+            ],
+            onSubmit: (data) => {
+                const options = {
+                    method: 'POST', 
+                    headers: {
+                        "Content-Type": "application/json",
+                        
+                    },
+                    body: JSON.stringify(data)
+                }
+                fetch('/book/create', options).then(res => res.json())
+                    .then(function (response) {
+                        if (response.err == 0) {
+                            toast({
+                                title: "Success",
+                                message: "Bạn đã thêm sách thành công",
+                                type: "success",
+                                duration: 2000,
+                            });
+                            setTimeout(() => {
+                                window.location.href = '/book'
+                            }, 2000)
+                        } else if (response.err == 1) {
+                            toast({
+                                title: "Tồn tại",
+                                message: "Sách đã tồn tại",
+                                type: "info",
+                                duration: 2000,
+                            });
+                            console.log(response);
+                        } 
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
+            }
+        })
+
+        // Handle delete book
+        const deleteBtn = document.querySelector('.delete-btn')
+        async function deletesp(id) {
+            fetch(`/book/delete/${id}`, { method: 'DELETE' }).then(res => res.json())
+                .then(function (response) {
+                    if (response.err == 0) {
+                        toast({
+                            title: "Success",
+                            message: "Bạn xóa sách thành công",
+                            type: "success",
+                            duration: 2000,
+                        });
+                        setTimeout(() => {
+                            window.location.href = '/book'
+                        }, 2000)
+                    } else if (response.err == 1) {
+                        toast({
+                            title: "Thất bại",
+                            message: "Không thể xóa",
+                            type: "info",
+                            duration: 2000,
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+        }
+
+        // Handle bookDetail
+        
+    </script>
+</body>
+
+</html>
